@@ -1,8 +1,6 @@
-from fastapi import APIRouter, Depends, HTTPException, status, Response
+from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.orm import Session
-from typing import List
-
-from app import models, schemas, crud
+from app import models, schemas
 from app.database import get_db
 
 router = APIRouter(
@@ -22,8 +20,7 @@ def read_dish(menu_id: int, submenu_id: int, dish_id: int, db: Session = Depends
     dish = db.query(models.Dish).filter(models.Dish.id == dish_id, models.Dish.submenu_id == submenu_id).first()
     if dish is None:
         raise HTTPException(status_code=404, detail="dish not found")
-    # return schemas.Dish(**dish.__dict__)
-    # return dish
+
     # Convert the SQLAlchemy model to a dictionary
     dishes_dict = {**dish.__dict__}
     dishes_dict.pop("_sa_instance_state", None)
