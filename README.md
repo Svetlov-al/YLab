@@ -15,27 +15,40 @@ Docker контейнер для простого развертывания.
 
 ### Меню
 
-`GET /menus` - получить список всех меню
-`GET /menus/{id}` - получить конкретное меню
-`POST /menus` - создать новое меню
-`PATCH /menus/{id}` - обновить существующее меню
-`DELETE /menus/{id}` - удалить меню
+```GET /menus``` - получить список всех меню
+
+```GET /menus/{id}``` - получить конкретное меню
+
+```POST /menus``` - создать новое меню
+
+```PATCH /menus/{id}``` - обновить существующее меню
+
+```DELETE /menus/{id}``` - удалить меню
 
 ### Подменю
 
-`GET /menus/{menu_id}/submenus` - получить список всех подменю для меню
-`GET /menus/{menu_id}/submenus/{id}` - получить конкретное подменю
-`POST /menus/{menu_id}/submenus` - создать новое подменю для меню
-`PATCH /menus/{menu_id}/submenus/{id}` - обновить существующее подменю
-`DELETE /menus/{menu_id}/submenus/{id}` - удалить подменю
+```GET /menus/{menu_id}/submenus``` - получить список всех подменю для меню
+
+```GET /menus/{menu_id}/submenus/{id}``` - получить конкретное подменю
+
+```POST /menus/{menu_id}/submenus``` - создать новое подменю для меню
+
+```PATCH /menus/{menu_id}/submenus/{id}``` - обновить существующее подменю
+
+```DELETE /menus/{menu_id}/submenus/{id}``` - удалить подменю
 
 ## Блюда
 
-`GET /menus/{menu_id}/submenus/{submenu_id}/dishes` - получить список всех блюд для подменю
-`GET /menus/{menu_id}/submenus/{submenu_id}/dishes/{id}` - получить конкретное блюдо
-`POST /menus/{menu_id}/submenus/{submenu_id}/dishes` - создать новое блюдо для подменю
-`PATCH /menus/{menu_id}/submenus/{submenu_id}/dishes/{id}` - обновить существующее блюдо
-`DELETE /menus/{menu_id}/submenus/{submenu_id}/dishes/{id}` - удалить блюдо
+```GET /menus/{menu_id}/submenus/{submenu_id}/dishes``` - получить список всех блюд для подменю
+
+```GET /menus/{menu_id}/submenus/{submenu_id}/dishes/{id}``` - получить конкретное блюдо
+
+```POST /menus/{menu_id}/submenus/{submenu_id}/dishes``` - создать новое блюдо для подменю
+
+```PATCH /menus/{menu_id}/submenus/{submenu_id}/dishes/{id}``` - обновить существующее блюдо
+
+```DELETE /menus/{menu_id}/submenus/{submenu_id}/dishes/{id}``` - удалить блюдо
+
 
 ### Запуск приложения
 Приложение запускается в Docker контейнере для простого развертывания.
