@@ -1,3 +1,13 @@
+def test_menu_has_correct_number_of_submenus_and_dishes(client, setup_dish):
+    test_menu, test_submenu, test_dish = setup_dish
+
+    response = client.get(f"/api/v1/menus/{test_menu.id}")
+
+    assert response.status_code == 200
+    data = response.json()
+
+    assert data['submenus_count'] == 1
+    assert data['dishes_count'] == 1
 
 
 def test_read_menus(client, db_session, test_menu):
