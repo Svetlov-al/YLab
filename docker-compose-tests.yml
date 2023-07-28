@@ -1,0 +1,26 @@
+version: python:3.10-slim
+services:
+  postgres:
+    image: postgres:15.1-alpine
+    environment:
+      - POSTGRES_PASSWORD=password
+      - POSTGRES_DB=YLab
+    ports:
+      - "5432:5432"
+
+  api-tests:
+    build: .
+    depends_on:
+      - postgres
+    volumes:
+      - ./:/usr/src/app:ro
+    command: pytest -v -s -W ignore --tb=short --color=yes
+    environment:
+      - DATABASE_HOSTNAME=postgres
+      - DATABASE_PORT=5432
+      - DATABASE_NAME=YLab
+      - DATABASE_USERNAME=postgres
+      - DATABASE_PASSWORD=password
+
+volumes:
+  postgres-db:

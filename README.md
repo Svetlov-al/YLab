@@ -53,6 +53,14 @@ Docker контейнер для простого развертывания.
 
 `docker-compose down`
 
+### Для запуска тестов в контейнере создан отдельный docker-compose-test.yml файл.
+Запустить тесты можно командой:
+`docker-compose -f docker-compose-tests.yml run api-tests`
+
+Для остановки тестового контейнера:
+`docker-compose -f docker-compose-tests.yml down`
+
+
 ### API будет доступен по адресу http://localhost:8000
 
 ### Документация OpenAPI/Swagger доступна по адресу http://localhost:8000/docs

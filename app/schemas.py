@@ -17,7 +17,7 @@ class MenuOutPut(MenuBase):
     dishes_count: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class MenuCreated(MenuBase):
@@ -26,7 +26,7 @@ class MenuCreated(MenuBase):
     dishes_count: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class SubmenuBase(BaseModel):
@@ -43,7 +43,7 @@ class SubmenuOut(SubmenuBase):
     menu_id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class SubmenuOutPut(SubmenuBase):
@@ -52,7 +52,7 @@ class SubmenuOutPut(SubmenuBase):
     dishes_count: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Submenu(SubmenuBase):
@@ -60,7 +60,7 @@ class Submenu(SubmenuBase):
     dishes_count: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class DishBase(BaseModel):
@@ -84,11 +84,11 @@ class DishOut(BaseModel):
     price: str
 
     class Config:
-        orm_mode = True
+        from_attributes = True
 
 
 class Dish(DishBase):
     id: int
 
     class Config:
-        orm_mode = True
+        from_attributes = True
