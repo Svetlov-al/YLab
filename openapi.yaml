@@ -1,0 +1,519 @@
+openapi: 3.0.0
+info:
+  title: Menu API
+  version: 1.0.0
+
+paths:
+
+  /menus:
+
+    get:
+      summary: Get all menus
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/MenuBase'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      summary: Create a new menu
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuCreate'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuBase'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /menus/{menuId}:
+
+    get:
+      summary: Get a menu
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuBase'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    patch:
+      summary: Update a menu
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/MenuCreate'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/MenuBase'
+        404:
+          $ref: '#/components/responses/NotFound'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      summary: Delete a menu
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: OK
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /menus/{menuId}/submenus:
+
+    get:
+      summary: Get all submenus for a menu
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Submenu'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      summary: Create a new submenu
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmenuCreate'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submenu'
+        404:
+          $ref: '#/components/responses/NotFound'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /menus/{menuId}/submenus/{submenuId}:
+
+    get:
+      summary: Get a submenu
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: submenuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submenu'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    patch:
+      summary: Update a submenu
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: submenuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/SubmenuCreate'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Submenu'
+        404:
+          $ref: '#/components/responses/NotFound'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      summary: Delete a submenu
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: submenuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: OK
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /menus/{menuId}/submenus/{submenuId}/dishes:
+
+    get:
+      summary: Get all dishes for a submenu
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: submenuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: query
+          name: skip
+          schema:
+            type: integer
+            default: 0
+        - in: query
+          name: limit
+          schema:
+            type: integer
+            default: 100
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Dish'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    post:
+      summary: Create a new dish
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: submenuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DishCreate'
+      responses:
+        201:
+          description: Created
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dish'
+        404:
+          $ref: '#/components/responses/NotFound'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+  /menus/{menuId}/submenus/{submenuId}/dishes/{dishId}:
+
+    get:
+      summary: Get a dish
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: submenuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: dishId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: Success
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dish'
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    patch:
+      summary: Update a dish
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: submenuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: dishId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/DishCreate'
+      responses:
+        200:
+          description: OK
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Dish'
+        404:
+          $ref: '#/components/responses/NotFound'
+        400:
+          $ref: '#/components/responses/ValidationError'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+    delete:
+      summary: Delete a dish
+      parameters:
+        - in: path
+          name: menuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: submenuId
+          required: true
+          schema:
+            type: string
+            format: uuid
+        - in: path
+          name: dishId
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        200:
+          description: OK
+        404:
+          $ref: '#/components/responses/NotFound'
+        500:
+          $ref: '#/components/responses/ServerError'
+
+components:
+
+  schemas:
+
+    MenuBase:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        submenus_count:
+          type: integer
+        dishes_count:
+          type: integer
+
+    MenuCreate:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+
+    Submenu:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+
+    SubmenuCreate:
+      type: object
+      required:
+        - title
+        - description
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+
+    Dish:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+
+    DishCreate:
+      type: object
+      required:
+        - title
+        - description
+        - price
+      properties:
+        title:
+          type: string
+        description:
+          type: string
+        price:
+          type: string
+          format: decimal
+
+  responses:
+
+    NotFound:
+      description: The specified resource was not found
+
+    ValidationError:
+      description: Validation failed
+
+    ServerError:
+      description: Internal server error
