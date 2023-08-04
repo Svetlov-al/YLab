@@ -1,11 +1,12 @@
+import pytest
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
-from app.main import app
-from app.config import settings
-from app.database import get_db, Base
+
 from app import models
-import pytest
+from app.config import settings
+from app.database import Base, get_db
+from app.main import app
 
 SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.database_password}@{settings.database_hostname}:{settings.database_port}/{settings.database_name}'
 
@@ -40,17 +41,17 @@ def client(db_session):
 
 @pytest.fixture
 def test_menu():
-    return models.Menu(title="Test Menu", description="Test Description")
+    return models.Menu(title='Test Menu', description='Test Description')
 
 
 @pytest.fixture
 def test_submenu(test_menu):
-    return models.Submenu(title="Test Submenu", description="Test Description", menu_id=test_menu.id)
+    return models.Submenu(title='Test Submenu', description='Test Description', menu_id=test_menu.id)
 
 
 @pytest.fixture
 def test_dish(test_submenu):
-    return models.Dish(title="Test Dish", description="Test Description", price=10.00, submenu_id=test_submenu.id)
+    return models.Dish(title='Test Dish', description='Test Description', price=10.00, submenu_id=test_submenu.id)
 
 
 @pytest.fixture

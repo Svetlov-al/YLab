@@ -1,9 +1,10 @@
 from fastapi import FastAPI
-from .database import engine
-from . import models
 from fastapi.middleware.cors import CORSMiddleware
-from app.routers import menus, submenus, dishes
 
+from app.routers import dishes, menus, submenus
+
+from . import models
+from .database import engine
 
 models.Base.metadata.create_all(bind=engine)
 
@@ -23,14 +24,11 @@ app.add_middleware(
     CORSMiddleware,
     allow_origins=origins,
     allow_credentials=True,
-    allow_methods=["*"],
-    allow_headers=["*"],
+    allow_methods=['*'],
+    allow_headers=['*'],
 )
 
 
-@app.get("/")
+@app.get('/')
 async def root():
-    return {"message": "Hello World"}
-
-
-
+    return {'message': 'Hello World'}

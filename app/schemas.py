@@ -1,5 +1,7 @@
-from pydantic import BaseModel
 from decimal import Decimal
+from uuid import UUID
+
+from pydantic import BaseModel
 
 
 class MenuBase(BaseModel):
@@ -12,16 +14,7 @@ class MenuCreate(MenuBase):
 
 
 class MenuOutPut(MenuBase):
-    id: str
-    submenus_count: int
-    dishes_count: int
-
-    class Config:
-        from_attributes = True
-
-
-class MenuCreated(MenuBase):
-    id: str
+    id: UUID
     submenus_count: int
     dishes_count: int
 
@@ -39,16 +32,16 @@ class SubmenuCreate(SubmenuBase):
 
 
 class SubmenuOut(SubmenuBase):
-    id: str
-    menu_id: int
+    id: UUID
+    menu_id: UUID
 
     class Config:
         from_attributes = True
 
 
 class SubmenuOutPut(SubmenuBase):
-    id: str
-    menu_id: int
+    id: UUID
+    menu_id: UUID
     dishes_count: int
 
     class Config:
@@ -56,7 +49,7 @@ class SubmenuOutPut(SubmenuBase):
 
 
 class Submenu(SubmenuBase):
-    id: int
+    id: UUID
     dishes_count: int
 
     class Config:
@@ -74,11 +67,11 @@ class DishCreate(DishBase):
 
 
 class DishCreated(DishBase):
-    id: str
+    id: UUID
 
 
 class DishOut(BaseModel):
-    id: str
+    id: UUID
     title: str
     description: str
     price: str
@@ -88,7 +81,7 @@ class DishOut(BaseModel):
 
 
 class Dish(DishBase):
-    id: int
+    id: UUID
 
     class Config:
         from_attributes = True
