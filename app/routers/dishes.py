@@ -1,9 +1,11 @@
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
+from fastapi_cache.decorator import cache
 from sqlalchemy.orm import Session
 
 from app import schemas
+from app.config import settings
 from app.database import get_db
 from app.database_repository import DishRepository, MenuRepository, SubmenuRepository
 from app.dish_service import DishService
@@ -13,14 +15,18 @@ router = APIRouter(
     tags=['Dishes']
 )
 
+cache_expire_time = settings.cache_expire
+
 
 @router.get('/menus/{menu_id}/submenus/{submenu_id}/dishes', response_model=list[schemas.Dish])
+@cache(expire=cache_expire_time)
 def read_dishes(menu_id: UUID, submenu_id: UUID, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
     dish_service = DishService(DishRepository(db), SubmenuRepository(db), MenuRepository(db))
     return dish_service.read_dishes(submenu_id, skip, limit)
 
 
 @router.get('/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}', response_model=schemas.Dish)
+@cache(expire=cache_expire_time)
 def read_dish(menu_id: UUID, submenu_id: UUID, dish_id: UUID, db: Session = Depends(get_db)):
     dish_service = DishService(DishRepository(db), SubmenuRepository(db), MenuRepository(db))
     dish = dish_service.read_dish(menu_id, submenu_id, dish_id)

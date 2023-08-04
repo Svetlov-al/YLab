@@ -8,10 +8,16 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:6.2.6-alpine
+    ports:
+      - "6379:6379"
+
   api:
     build: .
     depends_on:
       - postgres
+      - redis
     ports:
       - "8000:8000"
     volumes:
@@ -23,6 +29,7 @@ services:
       - DATABASE_NAME=YLab
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=password
+      - CACHE_EXPIRE=60
 
 volumes:
   postgres-db:

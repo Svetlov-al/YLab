@@ -21,6 +21,7 @@ services:
       - DATABASE_NAME=YLab
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=password
+      - CACHE_EXPIRE=60
 
 volumes:
   postgres-db:
