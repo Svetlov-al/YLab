@@ -1,5 +1,8 @@
 import pytest
+from aioredis import Redis
 from fastapi.testclient import TestClient
+from fastapi_cache import FastAPICache
+from fastapi_cache.backends.redis import RedisBackend
 from sqlalchemy import create_engine
 from sqlalchemy.orm import sessionmaker
 
@@ -13,7 +16,13 @@ SQLALCHEMY_DATABASE_URL = f'postgresql://{settings.database_username}:{settings.
 engine = create_engine(SQLALCHEMY_DATABASE_URL)
 
 Testing_SessionLocal = sessionmaker(
-    autocommit=False, autoflush=False, bind=engine)
+    autocommit=False, autoflush=True, bind=engine)
+
+
+@pytest.fixture(scope='session', autouse=True)
+def initialize_cache():
+    redis = Redis.from_url('redis://redis', decode_responses=True)
+    FastAPICache.init(RedisBackend(redis), prefix='fastapi-cache')
 
 
 @pytest.fixture()
@@ -47,6 +56,16 @@ def test_menu():
 @pytest.fixture
 def test_submenu(test_menu):
     return models.Submenu(title='Test Submenu', description='Test Description', menu_id=test_menu.id)
+
+
+@pytest.fixture
+def test_create_submenu(db_session, test_menu, test_submenu):
+    db_session.add(test_menu)
+    db_session.commit()
+    test_submenu.menu_id = test_menu.id
+    db_session.add(test_submenu)
+    db_session.commit()
+    return test_menu, test_submenu
 
 
 @pytest.fixture

@@ -63,4 +63,4 @@ class SubmenuService:
         if submenu is None:
             raise HTTPException(status_code=404, detail='submenu not found')
         self.submenu_repository.delete_submenu(menu_id, submenu_id)
-        return {'status': True, 'message': 'Menu deleted'}
+        return {'status': True, 'message': 'submenu deleted'}

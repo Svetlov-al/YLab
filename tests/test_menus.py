@@ -1,3 +1,6 @@
+import uuid
+
+
 def test_menu_has_correct_number_of_submenus_and_dishes(client, setup_dish):
     test_menu, test_submenu, test_dish = setup_dish
 
@@ -36,7 +39,8 @@ def test_read_menu(client, db_session, test_menu):
 
 
 def test_read_not_exist_menu(client, db_session):
-    response = client.get('/api/v1/menus/8000000')
+    random_uuid = uuid.uuid4()
+    response = client.get(f'/api/v1/menus/{random_uuid}')
     assert response.status_code == 404
 
 
@@ -63,9 +67,10 @@ def test_update_menu(client, db_session, test_menu):
 
 def test_update_not_exist_menu(client, db_session):
     updated_data = {'title': 'Updated Title', 'description': 'Updated Description'}
-    response = client.patch(f'/api/v1/menus/{800000000}', json=updated_data)
+    random_uuid = uuid.uuid4()
+    response = client.patch(f'/api/v1/menus/{random_uuid}', json=updated_data)
     assert response.status_code == 404
-    assert response.json() == {'detail': 'Menu not found'}
+    assert response.json() == {'detail': 'menu not found'}
 
 
 def test_delete_menu(client, db_session, test_menu):

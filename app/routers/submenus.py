@@ -52,4 +52,4 @@ def update_submenu(menu_id: UUID, submenu_id: UUID, submenu: schemas.SubmenuCrea
 def delete_submenu(menu_id: UUID, submenu_id: UUID, db: Session = Depends(get_db)):
     submenu_service = SubmenuService(MenuRepository(db), SubmenuRepository(db))
     submenu_service.delete_submenu(menu_id, submenu_id)
-    return {'message': 'Submenu deleted'}
+    return {'message': 'submenu deleted'}

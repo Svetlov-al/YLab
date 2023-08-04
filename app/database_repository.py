@@ -1,3 +1,4 @@
+from fastapi import HTTPException
 from sqlalchemy import func
 from sqlalchemy.orm import Session
 
@@ -18,7 +19,10 @@ class MenuRepository:
         return self.db.query(models.Menu).all()
 
     def get_menu(self, menu_id):
-        return self.db.query(models.Menu).filter(models.Menu.id == menu_id).first()
+        db_menu = self.db.query(models.Menu).filter(models.Menu.id == menu_id).first()
+        if db_menu is None:
+            raise HTTPException(status_code=404, detail='menu not found')
+        return db_menu
 
     def create_menu(self, menu_data: schemas.MenuCreate):
         db_menu = models.Menu(**menu_data.model_dump())
@@ -51,8 +55,11 @@ class SubmenuRepository:
         return self.db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id).all()
 
     def get_submenu(self, menu_id, submenu_id):
-        return self.db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id,
-                                                    models.Submenu.id == submenu_id).first()
+        submenu = self.db.query(models.Submenu).filter(models.Submenu.menu_id == menu_id,
+                                                       models.Submenu.id == submenu_id).first()
+        if not submenu:
+            raise HTTPException(status_code=404, detail='submenu not found')
+        return submenu
 
     def create_submenu(self, menu_id, submenu_data: schemas.SubmenuCreate):
         db_submenu = models.Submenu(menu_id=menu_id, **submenu_data.model_dump())
@@ -84,8 +91,11 @@ class DishRepository:
         return self.db.query(models.Dish).filter(models.Dish.submenu_id == submenu_id).offset(skip).limit(limit).all()
 
     def get_dish(self, submenu_id, dish_id):
-        return self.db.query(models.Dish).filter(models.Dish.submenu_id == submenu_id,
+        dish = self.db.query(models.Dish).filter(models.Dish.submenu_id == submenu_id,
                                                  models.Dish.id == dish_id).first()
+        if dish is None:
+            raise HTTPException(status_code=404, detail='dish not found')
+        return dish
 
     def create_dish(self, submenu_id, dish: schemas.DishCreate):
         dish = models.Dish(submenu_id=submenu_id, **dish.model_dump())

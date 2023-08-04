@@ -8,10 +8,16 @@ services:
     ports:
       - "5432:5432"
 
+  redis:
+    image: redis:6.2.6-alpine
+    ports:
+      - "6379:6379"
+
   api-tests:
     build: .
     depends_on:
       - postgres
+      - redis
     volumes:
       - ./:/usr/src/app:ro
     command: pytest -v -s -W ignore --tb=short --color=yes
