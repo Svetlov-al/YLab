@@ -1,11 +1,8 @@
 import uuid
 
 
-def test_menu_has_correct_number_of_submenus_and_dishes(client, setup_dish):
-    test_menu, test_submenu, test_dish = setup_dish
-
-    response = client.get(f'/api/v1/menus/{test_menu.id}')
-
+def test_menu_has_correct_number_of_submenus_and_dishes(client, create_menu, create_submenu, create_dish):
+    response = client.get(f'/api/v1/menus/{create_menu["id"]}')
     assert response.status_code == 200
     data = response.json()
 
@@ -13,70 +10,65 @@ def test_menu_has_correct_number_of_submenus_and_dishes(client, setup_dish):
     assert data['dishes_count'] == 1
 
 
-def test_read_menus(client, db_session, test_menu):
+def test_read_menus(client, fixture_menu):
     response = client.get('/api/v1/menus')
     assert response.status_code == 200
     assert response.json() == []
-
-    db_session.add(test_menu)
-    db_session.commit()
-
+    client.post('/api/v1/menus', json=fixture_menu)
     response = client.get('/api/v1/menus')
     assert response.status_code == 200
     assert len(response.json()) == 1
-    assert response.json()[0]['title'] == test_menu.title
+    assert response.json()[0]['title'] == fixture_menu['title']
 
 
-def test_read_menu(client, db_session, test_menu):
-    db_session.add(test_menu)
-    db_session.commit()
-
-    response = client.get(f'/api/v1/menus/{test_menu.id}')
+def test_read_menu(client, fixture_menu):
+    response = client.post('/api/v1/menus', json=fixture_menu)
+    response = client.get(f'/api/v1/menus/{response.json()["id"]}')
     assert response.status_code == 200
     data = response.json()
-    assert data['title'] == test_menu.title
-    assert data['description'] == test_menu.description
+    assert data['title'] == fixture_menu['title']
+    assert data['description'] == fixture_menu['description']
 
 
-def test_read_not_exist_menu(client, db_session):
+def test_read_not_exist_menu(client):
     random_uuid = uuid.uuid4()
     response = client.get(f'/api/v1/menus/{random_uuid}')
     assert response.status_code == 404
 
 
-def test_create_menu(client):
-    menu_data = {'title': 'New Menu', 'description': 'New Description'}
-    response = client.post('/api/v1/menus', json=menu_data)
+def test_create_menu(client, fixture_menu):
+    response = client.post('/api/v1/menus', json=fixture_menu)
     assert response.status_code == 201
     data = response.json()
-    assert data['title'] == menu_data['title']
-    assert data['description'] == menu_data['description']
+    assert data['title'] == fixture_menu['title']
+    assert data['description'] == fixture_menu['description']
 
 
-def test_update_menu(client, db_session, test_menu):
-    db_session.add(test_menu)
-    db_session.commit()
-
-    updated_data = {'title': 'Updated Title', 'description': 'Updated Description'}
-    response = client.patch(f'/api/v1/menus/{test_menu.id}', json=updated_data)
+def test_update_menu(client, fixture_menu_update, fixture_menu):
+    to_update_response = client.post('/api/v1/menus', json=fixture_menu)
+    to_update_data = to_update_response.json()
+    response = client.patch(f'/api/v1/menus/{to_update_data["id"]}', json=fixture_menu_update)
     assert response.status_code == 200
     data = response.json()
-    assert data['title'] == updated_data['title']
-    assert data['description'] == updated_data['description']
+    assert data['title'] == fixture_menu_update['title']
+    assert data['description'] == fixture_menu_update['description']
 
 
-def test_update_not_exist_menu(client, db_session):
-    updated_data = {'title': 'Updated Title', 'description': 'Updated Description'}
+def test_update_not_exist_menu(client, fixture_menu_update):
     random_uuid = uuid.uuid4()
-    response = client.patch(f'/api/v1/menus/{random_uuid}', json=updated_data)
+    response = client.patch(f'/api/v1/menus/{random_uuid}', json=fixture_menu_update)
     assert response.status_code == 404
     assert response.json() == {'detail': 'menu not found'}
 
 
-def test_delete_menu(client, db_session, test_menu):
-    db_session.add(test_menu)
-    db_session.commit()
+def test_delete_menu(client, fixture_menu):
+    # Создание меню
+    create_response = client.post('/api/v1/menus', json=fixture_menu)
+    assert create_response.status_code == 201  # или другой ожидаемый статус кода
+    menu_data = create_response.json()
+    menu_id = menu_data['id']
 
-    response = client.delete(f'/api/v1/menus/{test_menu.id}')
+    # Удаление меню
+    response = client.delete(f'/api/v1/menus/{menu_id}')
     assert response.status_code == 200
     assert response.json() == {'status': True, 'message': 'Menu deleted'}

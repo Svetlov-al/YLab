@@ -1,10 +1,8 @@
-import aioredis
 from fastapi import FastAPI
 from fastapi.middleware.cors import CORSMiddleware
-from fastapi_cache import FastAPICache
-from fastapi_cache.backends.redis import RedisBackend
 
 from app.routers import dishes, menus, submenus
+from app.tools import redis_client
 
 from . import models
 from .database import engine
@@ -33,8 +31,7 @@ app.add_middleware(
 
 @app.on_event('startup')
 async def startup_event():
-    redis = aioredis.from_url('redis://redis', decode_respones=True)
-    FastAPICache.init(RedisBackend(redis), prefix='fastapi-chache')
+    await redis_client.setup()
 
 
 @app.get('/')

@@ -42,7 +42,7 @@ class SubmenuOut(SubmenuBase):
 class SubmenuOutPut(SubmenuBase):
     id: UUID
     menu_id: UUID
-    dishes_count: int
+    dishes_count: int | None
 
     class Config:
         from_attributes = True
@@ -50,7 +50,7 @@ class SubmenuOutPut(SubmenuBase):
 
 class Submenu(SubmenuBase):
     id: UUID
-    dishes_count: int
+    dishes_count: int | None
 
     class Config:
         from_attributes = True
