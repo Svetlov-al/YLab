@@ -25,7 +25,7 @@ async def read_menus(db: Session = Depends(get_db)):
     if cached_menus:
         return json.loads(cached_menus[0])
     menu_service = MenuService(MenuRepository(db), SubmenuRepository(db), DishRepository(db))
-    menus = menu_service.read_menus()
+    menus = await menu_service.read_menus()
     # Сериализация списка меню в строку JSON и добавление в кеш
     serialized_menus = json.dumps([{'id': str(menu.id), **menu.dict(exclude={'id'})} for menu in menus])
     await redis_client.add_to_list('menus', serialized_menus, expire_time=cache_expire_time)
@@ -43,7 +43,7 @@ async def read_menu(menu_id: UUID, db: Session = Depends(get_db)):
 
     # Если меню нет в кеше, получим его из базы данных
     menu_service = MenuService(MenuRepository(db), SubmenuRepository(db), DishRepository(db))
-    menu = menu_service.read_menu(menu_id)
+    menu = await menu_service.read_menu(menu_id)
 
     # Сериализуем меню в строку JSON и добавим в кеш
     serialized_menu = json.dumps({'id': str(menu.id), **menu.dict(exclude={'id'})})
@@ -55,7 +55,7 @@ async def read_menu(menu_id: UUID, db: Session = Depends(get_db)):
 @router.post('/menus', status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOutPut)
 async def create_menu(menu: schemas.MenuCreate, db: Session = Depends(get_db)):
     menu_service = MenuService(MenuRepository(db), SubmenuRepository(db), DishRepository(db))
-    menu_created = menu_service.create_menu(menu)
+    menu_created = await menu_service.create_menu(menu)
 
     # Инвалидация кеша
     await redis_client.delete_key('menus')
@@ -66,7 +66,7 @@ async def create_menu(menu: schemas.MenuCreate, db: Session = Depends(get_db)):
 @router.patch('/menus/{menu_id}', response_model=schemas.MenuOutPut)
 async def update_menu(menu_id: UUID, menu: schemas.MenuCreate, db: Session = Depends(get_db)):
     menu_service = MenuService(MenuRepository(db), SubmenuRepository(db), DishRepository(db))
-    menu_updated = menu_service.update_menu(menu_id, menu)
+    menu_updated = await menu_service.update_menu(menu_id, menu)
 
     # Инвалидация кеша
     await redis_client.delete_key('menus')
@@ -78,7 +78,7 @@ async def update_menu(menu_id: UUID, menu: schemas.MenuCreate, db: Session = Dep
 @router.delete('/menus/{menu_id}')
 async def delete_menu(menu_id: UUID, db: Session = Depends(get_db)):
     menu_service = MenuService(MenuRepository(db), SubmenuRepository(db), DishRepository(db))
-    menu_service.delete_menu(menu_id)
+    await menu_service.delete_menu(menu_id)
 
     # Инвалидация кеша
     await redis_client.delete_key('menus')

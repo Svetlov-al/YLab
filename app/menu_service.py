@@ -13,12 +13,13 @@ class MenuService:
         self.submenu_repository = submenu_repository
         self.dish_repository = dish_repository
 
-    def read_menus(self):
-        menus = self.menu_repository.get_menus()
+    async def read_menus(self):
+        menus = await self.menu_repository.get_menus()
         results = []
-        for menu in menus:
-            submenus_count = self.menu_repository.get_submenus_count(menu.id)
-            dishes_count = self.menu_repository.get_dishes_count(menu.id)
+        for menu_row in menus:
+            menu = menu_row[0]  # Получаем объект модели из строки результата
+            submenus_count = await self.menu_repository.get_submenus_count(menu.id)
+            dishes_count = await self.menu_repository.get_dishes_count(menu.id)
             results.append(schemas.MenuOutPut(
                 id=str(menu.id),
                 title=menu.title,
@@ -28,13 +29,13 @@ class MenuService:
             ))
         return results
 
-    def read_menu(self, menu_id: UUID):
-        menu = self.menu_repository.get_menu(menu_id)
+    async def read_menu(self, menu_id: UUID):
+        menu = await self.menu_repository.get_menu(menu_id)
         if not menu:
             raise HTTPException(status_code=404, detail='menu not found')
 
-        submenus_count = self.menu_repository.get_submenus_count(menu.id)
-        dishes_count = self.menu_repository.get_dishes_count(menu.id)
+        submenus_count = await self.menu_repository.get_submenus_count(menu.id)
+        dishes_count = await self.menu_repository.get_dishes_count(menu.id)
 
         return schemas.MenuOutPut(
             id=menu.id,
@@ -44,8 +45,8 @@ class MenuService:
             dishes_count=dishes_count,
         )
 
-    def create_menu(self, menu: schemas.MenuCreate):
-        db_menu = self.menu_repository.create_menu(menu)
+    async def create_menu(self, menu: schemas.MenuCreate):
+        db_menu = await self.menu_repository.create_menu(menu)
 
         return schemas.MenuOutPut(
             id=db_menu.id,
@@ -55,14 +56,14 @@ class MenuService:
             dishes_count=0,
         )
 
-    def update_menu(self, menu_id: UUID, menu: schemas.MenuCreate):
-        db_menu = self.menu_repository.update_menu(menu_id, menu)
+    async def update_menu(self, menu_id: UUID, menu: schemas.MenuCreate):
+        db_menu = await self.menu_repository.update_menu(menu_id, menu)
 
         if not db_menu:
             raise HTTPException(status_code=404, detail='menu not found')
 
-        submenus_count = self.menu_repository.get_submenus_count(db_menu.id)
-        dishes_count = self.menu_repository.get_dishes_count(db_menu.id)
+        submenus_count = await self.menu_repository.get_submenus_count(db_menu.id)
+        dishes_count = await self.menu_repository.get_dishes_count(db_menu.id)
 
         return schemas.MenuOutPut(
             id=db_menu.id,
@@ -72,9 +73,9 @@ class MenuService:
             dishes_count=dishes_count,
         )
 
-    def delete_menu(self, menu_id: UUID):
-        menu = self.menu_repository.get_menu(menu_id)
+    async def delete_menu(self, menu_id: UUID):
+        menu = await self.menu_repository.get_menu(menu_id)
         if not menu:
             raise HTTPException(status_code=404, detail='menu not found')
-        self.menu_repository.delete_menu(menu_id)
+        await self.menu_repository.delete_menu(menu_id)
         return {'status': True, 'message': 'Menu deleted'}

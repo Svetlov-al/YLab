@@ -30,7 +30,7 @@ async def read_submenus(menu_id: UUID, db: Session = Depends(get_db)):
 
     # Если подменю нет в кеше, получим их из базы данных
     submenu_service = SubmenuService(MenuRepository(db), SubmenuRepository(db))
-    submenus = submenu_service.read_submenus(menu_id)
+    submenus = await submenu_service.read_submenus(menu_id)
 
     # Преобразуем каждый объект Submenu в экземпляр Pydantic модели
     pydantic_submenus = [schemas.SubmenuOut(**submenu.__dict__) for submenu in submenus]
@@ -54,7 +54,7 @@ async def read_submenu(menu_id: UUID, submenu_id: UUID, db: Session = Depends(ge
         return json.loads(cached_submenus)
 
     submenu_service = SubmenuService(MenuRepository(db), SubmenuRepository(db))
-    submenu = submenu_service.read_submenu(menu_id, submenu_id)
+    submenu = await submenu_service.read_submenu(menu_id, submenu_id)
 
     # Сериализуем подменю в строку JSON и добавим в кеш
     serialized_submenu = json.dumps(
@@ -71,7 +71,7 @@ async def read_submenu(menu_id: UUID, submenu_id: UUID, db: Session = Depends(ge
 @router.post('/menus/{menu_id}/submenus', response_model=schemas.SubmenuOutPut, status_code=status.HTTP_201_CREATED)
 async def create_submenu(menu_id: UUID, submenu: schemas.SubmenuCreate, db: Session = Depends(get_db)):
     submenu_service = SubmenuService(MenuRepository(db), SubmenuRepository(db))
-    submenu_created = submenu_service.create_submenu(menu_id, submenu)
+    submenu_created = await submenu_service.create_submenu(menu_id, submenu)
 
     # Удаление кеша связанного с этим меню
     await redis_client.delete_key('menus')
@@ -85,7 +85,7 @@ async def create_submenu(menu_id: UUID, submenu: schemas.SubmenuCreate, db: Sess
 @router.patch('/menus/{menu_id}/submenus/{submenu_id}', response_model=schemas.SubmenuOutPut)
 async def update_submenu(menu_id: UUID, submenu_id: UUID, submenu: schemas.SubmenuCreate, db: Session = Depends(get_db)):
     submenu_service = SubmenuService(MenuRepository(db), SubmenuRepository(db))
-    submenu_updated = submenu_service.update_submenu(menu_id, submenu_id, submenu)
+    submenu_updated = await submenu_service.update_submenu(menu_id, submenu_id, submenu)
 
     # Удаление кеша связанного с этим меню
     await redis_client.delete_key('menus')
@@ -99,7 +99,7 @@ async def update_submenu(menu_id: UUID, submenu_id: UUID, submenu: schemas.Subme
 @router.delete('/menus/{menu_id}/submenus/{submenu_id}')
 async def delete_submenu(menu_id: UUID, submenu_id: UUID, db: Session = Depends(get_db)):
     submenu_service = SubmenuService(MenuRepository(db), SubmenuRepository(db))
-    submenu_service.delete_submenu(menu_id, submenu_id)
+    await submenu_service.delete_submenu(menu_id, submenu_id)
 
     # Удаление кеша связанного с этим меню
     await redis_client.delete_key('menus')

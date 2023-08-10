@@ -28,7 +28,7 @@ async def read_dishes(menu_id: UUID, submenu_id: UUID, skip: int = 0, limit: int
         return json.loads(cached_dishes)
 
     dish_service = DishService(DishRepository(db), SubmenuRepository(db), MenuRepository(db))
-    dishes = dish_service.read_dishes(submenu_id, skip, limit)
+    dishes = await dish_service.read_dishes(submenu_id, skip, limit)
 
     # Преобразуем каждый объект Dish в экземпляр Pydantic модели
     pydantic_dishes = [schemas.Dish(**dish.__dict__) for dish in dishes]
@@ -56,7 +56,7 @@ async def read_dish(menu_id: UUID, submenu_id: UUID, dish_id: UUID, db: Session 
         return json.loads(cached_dish)
 
     dish_service = DishService(DishRepository(db), SubmenuRepository(db), MenuRepository(db))
-    dish = dish_service.read_dish(menu_id, submenu_id, dish_id)
+    dish = await dish_service.read_dish(menu_id, submenu_id, dish_id)
 
     # Сериализуем подменю в строку JSON и добавим в кеш
     serialized_dish = json.dumps(
@@ -86,7 +86,8 @@ async def create_dish(menu_id: UUID, submenu_id: UUID, dish: schemas.DishCreate,
     await redis_client.delete_key(f'Dishes_{submenu_id}')
     await redis_client.delete_key(f'Dish_{submenu_id}')
 
-    return dish_service.create_dish(menu_id, submenu_id, dish)
+    dish = await dish_service.create_dish(menu_id, submenu_id, dish)
+    return dish
 
 
 @router.patch('/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}', response_model=schemas.DishOut)
@@ -102,7 +103,8 @@ async def update_dish(menu_id: UUID, submenu_id: UUID, dish_id: UUID, dish: sche
     await redis_client.delete_key(f'Dishes_{submenu_id}')
     await redis_client.delete_key(f'Dish_{submenu_id}')
 
-    return dish_service.update_dish(menu_id, submenu_id, dish_id, dish)
+    dish = await dish_service.update_dish(menu_id, submenu_id, dish_id, dish)
+    return dish
 
 
 @router.delete('/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}')
@@ -117,4 +119,5 @@ async def delete_dish(menu_id: UUID, submenu_id: UUID, dish_id: UUID, db: Sessio
     await redis_client.delete_key(f'Dishes_{submenu_id}')
     await redis_client.delete_key(f'Dish_{submenu_id}')
 
-    return dish_service.delete_dish(menu_id, submenu_id, dish_id)
+    dish = await dish_service.delete_dish(menu_id, submenu_id, dish_id)
+    return dish

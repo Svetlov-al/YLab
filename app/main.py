@@ -5,9 +5,10 @@ from app.routers import dishes, menus, submenus
 from app.tools import redis_client
 
 from . import models
-from .database import engine
+from .database import sync_engine
 
-models.Base.metadata.create_all(bind=engine)
+models.Base.metadata.create_all(bind=sync_engine)
+
 
 app = FastAPI(
     title='YLab_University'
