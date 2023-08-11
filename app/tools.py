@@ -29,5 +29,8 @@ class RedisTools:
         if expire_time:
             await self.redis.expire(key, expire_time)
 
+    async def clear_all(self):
+        await self.redis.flushall()
+
 
 redis_client = RedisTools()
