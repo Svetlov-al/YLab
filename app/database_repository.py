@@ -1,6 +1,7 @@
 from fastapi import HTTPException
 from sqlalchemy import func, select
 from sqlalchemy.ext.asyncio import AsyncSession
+from sqlalchemy.orm import joinedload
 
 from app import models, schemas
 
@@ -8,6 +9,15 @@ from app import models, schemas
 class MenuRepository:
     def __init__(self, db: AsyncSession):
         self.db = db
+
+    async def get_full_menus(self):
+        result = await self.db.execute(
+            select(models.Menu)
+            .options(joinedload(models.Menu.submenus).joinedload(models.Submenu.dishes))
+        )
+
+        menus = result.scalars().unique().all()
+        return menus
 
     async def get_submenus_count(self, menu_id):
         result = await self.db.execute(

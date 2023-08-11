@@ -13,6 +13,41 @@ class MenuService:
         self.submenu_repository = submenu_repository
         self.dish_repository = dish_repository
 
+    async def get_full_menus(self):
+        menus = await self.menu_repository.get_full_menus()
+
+        result = []
+        for menu in menus:
+            menu_dict = {
+                'id': menu.id,
+                'title': menu.title,
+                'description': menu.description,
+                'submenus': []
+            }
+
+            for submenu in menu.submenus:
+                submenu_dict = {
+                    'id': submenu.id,
+                    'title': submenu.title,
+                    'description': submenu.description,
+                    'dishes': []
+                }
+
+                for dish in submenu.dishes:
+                    dish_dict = {
+                        'id': dish.id,
+                        'title': dish.title,
+                        'description': dish.description,
+                        'price': float(dish.price)
+                    }
+                    submenu_dict['dishes'].append(dish_dict)
+
+                menu_dict['submenus'].append(submenu_dict)
+
+            result.append(menu_dict)
+
+        return result
+
     async def read_menus(self):
         menus = await self.menu_repository.get_menus()
         results = []
