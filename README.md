@@ -12,6 +12,14 @@ Docker контейнер для простого развертывания.
 Конечные точки API.
 
 В проект встроен ```Redis``` для кеширования ```GET``` запросов.
+
+Для принудительной инвалидации кеша можно использовать `POST` запрос!
+
+### Запрос по адресу
+### `POST /api/v1/invalidate`,
+Реализована функция через `background task`, данный функционал можно расширить.
+
+
 ## API имеет следующие конечные точки:
 
 ### Добавлен новый маршрут для отображения всех меню, сабменю, и блюд по типу матрешки!
@@ -20,39 +28,39 @@ Docker контейнер для простого развертывания.
 
 ### Меню
 
-```GET /menus``` - получить список всех меню
+```GET /api/v1/menus``` - получить список всех меню
 
-```GET /menus/{id}``` - получить конкретное меню
+```GET /api/v1/menus/{id}``` - получить конкретное меню
 
-```POST /menus``` - создать новое меню
+```POST /api/v1/menus``` - создать новое меню
 
-```PATCH /menus/{id}``` - обновить существующее меню
+```PATCH /api/v1/menus/{id}``` - обновить существующее меню
 
-```DELETE /menus/{id}``` - удалить меню
+```DELETE /api/v1/menus/{id}``` - удалить меню
 
 ### Подменю
 
-```GET /menus/{menu_id}/submenus``` - получить список всех подменю для меню
+```GET /api/v1/menus/{menu_id}/submenus``` - получить список всех подменю для меню
 
-```GET /menus/{menu_id}/submenus/{id}``` - получить конкретное подменю
+```GET /api/v1/menus/{menu_id}/submenus/{id}``` - получить конкретное подменю
 
-```POST /menus/{menu_id}/submenus``` - создать новое подменю для меню
+```POST /api/v1/menus/{menu_id}/submenus``` - создать новое подменю для меню
 
-```PATCH /menus/{menu_id}/submenus/{id}``` - обновить существующее подменю
+```PATCH /api/v1/menus/{menu_id}/submenus/{id}``` - обновить существующее подменю
 
-```DELETE /menus/{menu_id}/submenus/{id}``` - удалить подменю
+```DELETE /api/v1/menus/{menu_id}/submenus/{id}``` - удалить подменю
 
 ## Блюда
 
-```GET /menus/{menu_id}/submenus/{submenu_id}/dishes``` - получить список всех блюд для подменю
+```GET /api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes``` - получить список всех блюд для подменю
 
-```GET /menus/{menu_id}/submenus/{submenu_id}/dishes/{id}``` - получить конкретное блюдо
+```GET /api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{id}``` - получить конкретное блюдо
 
-```POST /menus/{menu_id}/submenus/{submenu_id}/dishes``` - создать новое блюдо для подменю
+```POST /api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes``` - создать новое блюдо для подменю
 
-```PATCH /menus/{menu_id}/submenus/{submenu_id}/dishes/{id}``` - обновить существующее блюдо
+```PATCH /api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{id}``` - обновить существующее блюдо
 
-```DELETE /menus/{menu_id}/submenus/{submenu_id}/dishes/{id}``` - удалить блюдо
+```DELETE /api/v1/menus/{menu_id}/submenus/{submenu_id}/dishes/{id}``` - удалить блюдо
 
 
 ### Запуск приложения

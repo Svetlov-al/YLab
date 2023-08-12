@@ -1,10 +1,11 @@
 import json
 from uuid import UUID
 
-from fastapi import APIRouter, Depends, status
+from fastapi import APIRouter, BackgroundTasks, Depends, status
 from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import schemas
+from app.background_work import invalidate_cache, recursive_dictify
 from app.config import settings
 from app.database import get_db
 from app.database_repository import DishRepository, MenuRepository, SubmenuRepository
@@ -19,17 +20,10 @@ router = APIRouter(
 cache_expire_time = settings.cache_expire
 
 
-def recursive_dictify(obj) -> dict | list:
-    if isinstance(obj, list):
-        return [recursive_dictify(item) for item in obj]
-    elif hasattr(obj, '__dict__'):
-        obj_dict = {}
-        for key, value in obj.__dict__.items():
-            if not key.startswith('_'):  # Исключаем служебные атрибуты
-                obj_dict[key] = recursive_dictify(value)
-        return obj_dict
-    else:
-        return obj
+@router.post('/invalidate/')
+async def trigger_invalidation(background_tasks: BackgroundTasks):
+    background_tasks.add_task(invalidate_cache)
+    return {'message': 'Cache invalidation has been triggered in the background'}
 
 
 @router.get('/', status_code=status.HTTP_200_OK)
@@ -58,7 +52,6 @@ async def read_menus(db: AsyncSession = Depends(get_db)):
 
 @router.get('/menus/{menu_id}', response_model=schemas.MenuOutPut, status_code=status.HTTP_200_OK)
 async def read_menu(menu_id: UUID, db: AsyncSession = Depends(get_db)):
-
     cache_key = f'MenuData_{menu_id}'
     # Попробуем получить меню из кеша
     cached_menu = await redis_client.get_key(cache_key)
