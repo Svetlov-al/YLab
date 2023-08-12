@@ -48,13 +48,13 @@ class MenuRepository:
         return db_menu
 
     async def create_menu(self, menu_data: schemas.MenuCreate):
-        db_menu = models.Menu(**menu_data.model_dump())
+        db_menu = models.Menu(**menu_data.dict())
         self.db.add(db_menu)
         await self.db.commit()
         await self.db.refresh(db_menu)
         return db_menu
 
-    async def update_menu(self, menu_id, menu: schemas.MenuCreate):
+    async def update_menu(self, menu_id, menu: schemas.MenuBase):
         db_menu = await self.get_menu(menu_id)
         db_menu.title = menu.title
         db_menu.description = menu.description
@@ -96,7 +96,7 @@ class SubmenuRepository:
         await self.db.refresh(db_submenu)
         return db_submenu
 
-    async def update_submenu(self, menu_id, submenu_id, submenu_data: schemas.SubmenuCreate):
+    async def update_submenu(self, menu_id, submenu_id, submenu_data: schemas.SubmenuBase):
         db_submenu = await self.get_submenu(menu_id, submenu_id)
         for key, value in submenu_data.model_dump().items():
             setattr(db_submenu, key, value)
@@ -130,13 +130,13 @@ class DishRepository:
         return dish[0]
 
     async def create_dish(self, submenu_id, dish: schemas.DishCreate):
-        db_dish = models.Dish(submenu_id=submenu_id, **dish.model_dump())
+        db_dish = models.Dish(submenu_id=submenu_id, **dish.dict())
         self.db.add(db_dish)
         await self.db.commit()
         await self.db.refresh(db_dish)
         return db_dish
 
-    async def update_dish(self, submenu_id, dish_id, dish_data: schemas.DishCreate):
+    async def update_dish(self, submenu_id, dish_id, dish_data: schemas.DishBase):
         db_dish = await self.get_dish(submenu_id, dish_id)
         for key, value in dish_data.model_dump().items():
             setattr(db_dish, key, value)

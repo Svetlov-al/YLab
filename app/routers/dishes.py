@@ -2,7 +2,7 @@ import json
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import schemas
 from app.config import settings
@@ -20,7 +20,7 @@ cache_expire_time = settings.cache_expire
 
 
 @router.get('/menus/{menu_id}/submenus/{submenu_id}/dishes', response_model=list[schemas.Dish])
-async def read_dishes(menu_id: UUID, submenu_id: UUID, skip: int = 0, limit: int = 100, db: Session = Depends(get_db)):
+async def read_dishes(menu_id: UUID, submenu_id: UUID, skip: int = 0, limit: int = 100, db: AsyncSession = Depends(get_db)):
     cache_key = f'Dishes_{submenu_id}'
 
     cached_dishes = await redis_client.get_key(cache_key)
@@ -47,7 +47,7 @@ async def read_dishes(menu_id: UUID, submenu_id: UUID, skip: int = 0, limit: int
 
 
 @router.get('/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}', response_model=schemas.Dish)
-async def read_dish(menu_id: UUID, submenu_id: UUID, dish_id: UUID, db: Session = Depends(get_db)):
+async def read_dish(menu_id: UUID, submenu_id: UUID, dish_id: UUID, db: AsyncSession = Depends(get_db)):
 
     cache_key = f'Dish_{submenu_id}'
     # Попробуем получить подменю из кеша
@@ -75,7 +75,7 @@ async def read_dish(menu_id: UUID, submenu_id: UUID, dish_id: UUID, db: Session 
 
 @router.post('/menus/{menu_id}/submenus/{submenu_id}/dishes', status_code=status.HTTP_201_CREATED,
              response_model=schemas.DishOut)
-async def create_dish(menu_id: UUID, submenu_id: UUID, dish: schemas.DishCreate, db: Session = Depends(get_db)):
+async def create_dish(menu_id: UUID, submenu_id: UUID, dish: schemas.DishCreate, db: AsyncSession = Depends(get_db)):
     dish_service = DishService(DishRepository(db), SubmenuRepository(db), MenuRepository(db))
 
     # Удаление кеша связанного с этим меню
@@ -91,8 +91,8 @@ async def create_dish(menu_id: UUID, submenu_id: UUID, dish: schemas.DishCreate,
 
 
 @router.patch('/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}', response_model=schemas.DishOut)
-async def update_dish(menu_id: UUID, submenu_id: UUID, dish_id: UUID, dish: schemas.DishCreate,
-                      db: Session = Depends(get_db)):
+async def update_dish(menu_id: UUID, submenu_id: UUID, dish_id: UUID, dish: schemas.DishBase,
+                      db: AsyncSession = Depends(get_db)):
     dish_service = DishService(DishRepository(db), SubmenuRepository(db), MenuRepository(db))
 
     # Удаление кеша связанного с этим меню
@@ -108,7 +108,7 @@ async def update_dish(menu_id: UUID, submenu_id: UUID, dish_id: UUID, dish: sche
 
 
 @router.delete('/menus/{menu_id}/submenus/{submenu_id}/dishes/{dish_id}')
-async def delete_dish(menu_id: UUID, submenu_id: UUID, dish_id: UUID, db: Session = Depends(get_db)):
+async def delete_dish(menu_id: UUID, submenu_id: UUID, dish_id: UUID, db: AsyncSession = Depends(get_db)):
     dish_service = DishService(DishRepository(db), SubmenuRepository(db), MenuRepository(db))
 
     # Удаление кеша связанного с этим меню

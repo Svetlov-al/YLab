@@ -10,7 +10,7 @@ class MenuBase(BaseModel):
 
 
 class MenuCreate(MenuBase):
-    pass
+    id: UUID | None = None
 
 
 class MenuOutPut(MenuBase):
@@ -28,7 +28,7 @@ class SubmenuBase(BaseModel):
 
 
 class SubmenuCreate(SubmenuBase):
-    pass
+    id: UUID | None = None
 
 
 class SubmenuOut(SubmenuBase):
@@ -63,7 +63,7 @@ class DishBase(BaseModel):
 
 
 class DishCreate(DishBase):
-    pass
+    id: UUID | None = None
 
 
 class DishCreated(DishBase):

@@ -6,7 +6,7 @@ from sqlalchemy import Column, ForeignKey, Numeric, String
 from sqlalchemy.orm import relationship
 from sqlalchemy_utils import UUIDType  # type: ignore
 
-from .database import Base
+from app.database import Base
 
 
 class Menu(Base):

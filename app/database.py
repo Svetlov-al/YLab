@@ -1,8 +1,8 @@
 from typing import AsyncIterator
 
 from sqlalchemy import MetaData, create_engine
-from sqlalchemy.ext.asyncio import AsyncSession, async_sessionmaker, create_async_engine
-from sqlalchemy.orm import declarative_base
+from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
+from sqlalchemy.orm import declarative_base, sessionmaker
 
 from app.config import settings
 
@@ -13,15 +13,17 @@ async_engine = create_async_engine(
     SQLALCHEMY_DATABASE_URL,
     echo=False,
     pool_size=10,
-    max_overflow=0,
+    max_overflow=20,
     future=True,
 )
 
 SQLALCHEMY_SYNC_DATABASE_URL = SQLALCHEMY_DATABASE_URL.replace('postgresql+asyncpg', 'postgresql')
 sync_engine = create_engine(SQLALCHEMY_SYNC_DATABASE_URL)
 
-async_session = async_sessionmaker(
+# Используйте sessionmaker с асинхронным движком
+AsyncSessionLocal = sessionmaker(
     bind=async_engine,
+    class_=AsyncSession,
     autoflush=False,
     future=True,
 )
@@ -31,7 +33,7 @@ Base = declarative_base(metadata=metadata)
 
 
 async def get_db() -> AsyncIterator[AsyncSession]:
-    db = async_session()
+    db = AsyncSessionLocal()
     try:
         yield db
     finally:

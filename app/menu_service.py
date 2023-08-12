@@ -91,7 +91,7 @@ class MenuService:
             dishes_count=0,
         )
 
-    async def update_menu(self, menu_id: UUID, menu: schemas.MenuCreate):
+    async def update_menu(self, menu_id: UUID, menu: schemas.MenuBase):
         db_menu = await self.menu_repository.update_menu(menu_id, menu)
 
         if not db_menu:

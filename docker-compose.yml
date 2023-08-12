@@ -1,4 +1,5 @@
 version: '3'
+
 services:
   postgres:
     image: postgres:15.1-alpine
@@ -13,15 +14,25 @@ services:
     ports:
       - "6379:6379"
 
+  rabbitmq:
+    image: "rabbitmq"
+    ports:
+      - "15672:15672"
+      - "5672:5672"
+    environment:
+      - RABBITMQ_DEFAULT_USER=guest
+      - RABBITMQ_DEFAULT_PASS=guest
+
   api:
     build: .
     depends_on:
       - postgres
       - redis
+      - rabbitmq
     ports:
       - "8000:8000"
     volumes:
-      - ./:/usr/src/app:ro
+      - ./:/usr/src/app
     command: uvicorn app.main:app --host 0.0.0.0 --port 8000 --reload
     environment:
       - DATABASE_HOSTNAME=postgres
@@ -30,6 +41,24 @@ services:
       - DATABASE_USERNAME=postgres
       - DATABASE_PASSWORD=password
       - CACHE_EXPIRE=60
+
+  celery-worker:
+    build: .
+    volumes:
+      - ./:/usr/src/app
+    command: celery -A app.celery_task worker
+    depends_on:
+      - api
+      - rabbitmq
+
+  celery-beat:
+    build: .
+    volumes:
+      - ./:/usr/src/app
+    command: celery -A app.celery_task beat
+    depends_on:
+      - api
+      - rabbitmq
 
 volumes:
   postgres-db:

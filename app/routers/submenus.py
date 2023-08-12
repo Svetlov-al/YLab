@@ -2,7 +2,7 @@ import json
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import schemas
 from app.config import settings
@@ -20,7 +20,7 @@ cache_expire_time = settings.cache_expire
 
 
 @router.get('/menus/{menu_id}/submenus', response_model=list[schemas.SubmenuOut])
-async def read_submenus(menu_id: UUID, db: Session = Depends(get_db)):
+async def read_submenus(menu_id: UUID, db: AsyncSession = Depends(get_db)):
     cache_key = f'Submenus_{menu_id}'
 
     # Попробуем получить подменю из кеша
@@ -45,7 +45,7 @@ async def read_submenus(menu_id: UUID, db: Session = Depends(get_db)):
 
 @router.get('/menus/{menu_id}/submenus/{submenu_id}', response_model=schemas.SubmenuOutPut,
             status_code=status.HTTP_200_OK)
-async def read_submenu(menu_id: UUID, submenu_id: UUID, db: Session = Depends(get_db)):
+async def read_submenu(menu_id: UUID, submenu_id: UUID, db: AsyncSession = Depends(get_db)):
     cache_key = f'Submenu_{menu_id}'
 
     # Попробуем получить подменю из кеша
@@ -69,7 +69,7 @@ async def read_submenu(menu_id: UUID, submenu_id: UUID, db: Session = Depends(ge
 
 
 @router.post('/menus/{menu_id}/submenus', response_model=schemas.SubmenuOutPut, status_code=status.HTTP_201_CREATED)
-async def create_submenu(menu_id: UUID, submenu: schemas.SubmenuCreate, db: Session = Depends(get_db)):
+async def create_submenu(menu_id: UUID, submenu: schemas.SubmenuCreate, db: AsyncSession = Depends(get_db)):
     submenu_service = SubmenuService(MenuRepository(db), SubmenuRepository(db))
     submenu_created = await submenu_service.create_submenu(menu_id, submenu)
 
@@ -83,7 +83,7 @@ async def create_submenu(menu_id: UUID, submenu: schemas.SubmenuCreate, db: Sess
 
 
 @router.patch('/menus/{menu_id}/submenus/{submenu_id}', response_model=schemas.SubmenuOutPut)
-async def update_submenu(menu_id: UUID, submenu_id: UUID, submenu: schemas.SubmenuCreate, db: Session = Depends(get_db)):
+async def update_submenu(menu_id: UUID, submenu_id: UUID, submenu: schemas.SubmenuBase, db: AsyncSession = Depends(get_db)):
     submenu_service = SubmenuService(MenuRepository(db), SubmenuRepository(db))
     submenu_updated = await submenu_service.update_submenu(menu_id, submenu_id, submenu)
 
@@ -97,7 +97,7 @@ async def update_submenu(menu_id: UUID, submenu_id: UUID, submenu: schemas.Subme
 
 
 @router.delete('/menus/{menu_id}/submenus/{submenu_id}')
-async def delete_submenu(menu_id: UUID, submenu_id: UUID, db: Session = Depends(get_db)):
+async def delete_submenu(menu_id: UUID, submenu_id: UUID, db: AsyncSession = Depends(get_db)):
     submenu_service = SubmenuService(MenuRepository(db), SubmenuRepository(db))
     await submenu_service.delete_submenu(menu_id, submenu_id)
 

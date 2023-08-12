@@ -2,7 +2,7 @@ import json
 from uuid import UUID
 
 from fastapi import APIRouter, Depends, status
-from sqlalchemy.orm import Session
+from sqlalchemy.ext.asyncio import AsyncSession
 
 from app import schemas
 from app.config import settings
@@ -19,8 +19,32 @@ router = APIRouter(
 cache_expire_time = settings.cache_expire
 
 
+def recursive_dictify(obj) -> dict | list:
+    if isinstance(obj, list):
+        return [recursive_dictify(item) for item in obj]
+    elif hasattr(obj, '__dict__'):
+        obj_dict = {}
+        for key, value in obj.__dict__.items():
+            if not key.startswith('_'):  # Исключаем служебные атрибуты
+                obj_dict[key] = recursive_dictify(value)
+        return obj_dict
+    else:
+        return obj
+
+
+@router.get('/', status_code=status.HTTP_200_OK)
+async def root(db: AsyncSession = Depends(get_db)):
+    menu_repo = MenuRepository(db)
+    submenu_repo = SubmenuRepository(db)
+    dish_repo = DishRepository(db)
+
+    menu_service = MenuService(menu_repo, submenu_repo, dish_repo)
+    menus = await menu_service.get_full_menus()
+    return recursive_dictify(menus)
+
+
 @router.get('/menus', status_code=status.HTTP_200_OK)
-async def read_menus(db: Session = Depends(get_db)):
+async def read_menus(db: AsyncSession = Depends(get_db)):
     cached_menus = await redis_client.get_list('menus')
     if cached_menus:
         return json.loads(cached_menus[0])
@@ -33,7 +57,7 @@ async def read_menus(db: Session = Depends(get_db)):
 
 
 @router.get('/menus/{menu_id}', response_model=schemas.MenuOutPut, status_code=status.HTTP_200_OK)
-async def read_menu(menu_id: UUID, db: Session = Depends(get_db)):
+async def read_menu(menu_id: UUID, db: AsyncSession = Depends(get_db)):
 
     cache_key = f'MenuData_{menu_id}'
     # Попробуем получить меню из кеша
@@ -53,7 +77,7 @@ async def read_menu(menu_id: UUID, db: Session = Depends(get_db)):
 
 
 @router.post('/menus', status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOutPut)
-async def create_menu(menu: schemas.MenuCreate, db: Session = Depends(get_db)):
+async def create_menu(menu: schemas.MenuCreate, db: AsyncSession = Depends(get_db)):
     menu_service = MenuService(MenuRepository(db), SubmenuRepository(db), DishRepository(db))
     menu_created = await menu_service.create_menu(menu)
 
@@ -64,7 +88,7 @@ async def create_menu(menu: schemas.MenuCreate, db: Session = Depends(get_db)):
 
 
 @router.patch('/menus/{menu_id}', response_model=schemas.MenuOutPut)
-async def update_menu(menu_id: UUID, menu: schemas.MenuCreate, db: Session = Depends(get_db)):
+async def update_menu(menu_id: UUID, menu: schemas.MenuBase, db: AsyncSession = Depends(get_db)):
     menu_service = MenuService(MenuRepository(db), SubmenuRepository(db), DishRepository(db))
     menu_updated = await menu_service.update_menu(menu_id, menu)
 
@@ -76,7 +100,7 @@ async def update_menu(menu_id: UUID, menu: schemas.MenuCreate, db: Session = Dep
 
 
 @router.delete('/menus/{menu_id}')
-async def delete_menu(menu_id: UUID, db: Session = Depends(get_db)):
+async def delete_menu(menu_id: UUID, db: AsyncSession = Depends(get_db)):
     menu_service = MenuService(MenuRepository(db), SubmenuRepository(db), DishRepository(db))
     await menu_service.delete_menu(menu_id)
 

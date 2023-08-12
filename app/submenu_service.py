@@ -43,7 +43,7 @@ class SubmenuService:
             dishes_count=0,
         )
 
-    async def update_submenu(self, menu_id: UUID, submenu_id: UUID, submenu_data: schemas.SubmenuCreate):
+    async def update_submenu(self, menu_id: UUID, submenu_id: UUID, submenu_data: schemas.SubmenuBase):
         submenu = await self.submenu_repository.update_submenu(menu_id, submenu_id, submenu_data)
 
         if not submenu:

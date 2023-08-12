@@ -53,7 +53,7 @@ class DishService:
             price=str(dish.price),
         )
 
-    async def update_dish(self, menu_id: UUID, submenu_id: UUID, dish_id: UUID, dish_data: schemas.DishCreate):
+    async def update_dish(self, menu_id: UUID, submenu_id: UUID, dish_id: UUID, dish_data: schemas.DishBase):
         menu = await self.menu_repository.get_menu(menu_id)
         if not menu:
             raise HTTPException(status_code=404, detail='menu not found')
