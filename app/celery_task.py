@@ -94,36 +94,6 @@ def database_synchronization():
 
 
 BASE_URL = 'http://api:8000/api/v1'
-data = ([{'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40100',
-          'title': 'Меню', 'description': 'Основное меню'},
-         {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40102',
-          'title': 'Алкогольное меню', 'description': 'Алкогольные напитки'}],
-        [{'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40101',
-          'title': 'Холодные закуски', 'description': 'К пиву',
-          'menu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40100'},
-         {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40103',
-            'title': 'Рамен', 'description': 'Горячий рамен',
-            'menu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40100'},
-         {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40104',
-          'title': 'Красные вина', 'description': 'Для романтичного вечера',
-          'menu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40102'},
-         {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40105',
-          'title': 'Виски', 'description': 'Для интересных бесед',
-          'menu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40102'}],
-        [{'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40106',
-          'title': 'Сельдь Бисмарк', 'description': 'Традиционное немецкое блюдо из маринованной сельди',
-          'price': 182.99, 'submenu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40101'},
-         {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40107',
-            'title': 'Мясная тарелка', 'description': 'Нарезка из ветчины, колбасных колечек,'
-            ' нескольких сортов сыра и фруктов',
-            'price': 215.36, 'submenu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40101'},
-         {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40108', 'title': 'Рыбная тарелка',
-            'description': 'Нарезка из креветок, кальмаров, раковых шеек, гребешков,'
-            ' лосося, скумбрии и красной икры', 'price': 265.57,
-            'submenu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40101'},
-         {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40109',
-            'title': 'Дайзу рамен', 'description': 'Рамен на курином бульоне с куриными подушками и яйцом аджитама,'
-            ' яично-пшеничной лапшой, ростки зелени, грибами муэр и зеленым луком', 'price': 166.47, 'submenu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40103'}, {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40110', 'title': 'Унаги рамен', 'description': 'Рамен на нежном сливочном рыбном бульоне, с добавлением маринованного угря, грибов муэр, кунжута, зеленого лука', 'price': 168.25, 'submenu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40103'}, {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40111', 'title': 'Чиизу Рамен', 'description': 'Рамен на насыщенном сырном бульоне на основе кокосового молока, с добавлением куриной грудинки, яично - пшеничной лапши, мисо-матадоре, ростков зелени, листьев вакамэ', 'price': 132.88, 'submenu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40103'}, {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40112', 'title': 'Шемен де Пап ля Ноблесс', 'description': 'Вино красное — фруктовое, среднетелое, выдержанное в дубе', 'price': 2700.79, 'submenu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40104'}, {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40113', 'title': 'Рипароссо Монтепульчано', 'description': 'Вино красное, сухое', 'price': 3100.33, 'submenu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40104'}, {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40114', 'title': 'Кьянти, Серристори', 'description': 'Вино красное — элегантное, комплексное, не выдержанное в дубе', 'price': 1850.42, 'submenu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40104'}, {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40115', 'title': 'Джемисон', 'description': 'Классический купажированный виски, проходящий 4-хлетнюю выдержку в дубовых бочках', 'price': 420.78, 'submenu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40105'}, {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40116', 'title': 'Джек Дэниелс', 'description': 'Характерен мягкий вкус, сочетает в себе карамельно-ванильные и древесные нотки. Легкий привкус дыма.', 'price': 440.11, 'submenu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40105'}, {'uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40117', 'title': 'Чивас Ригал', 'description': 'Это купаж высококачественных солодовых и зерновых виски, выдержанных как минимум в течение 12 лет, что придает напитку роскошные нотки меда, ванили и спелых яблок.', 'price': 520.08, 'submenu_uuid': '9bc1fc99-c53e-42ae-adec-6fe466b40105'}])
 
 
 async def async_database_operations(menus_data, submenus_data, dishes_data):
@@ -144,7 +114,6 @@ async def async_database_operations(menus_data, submenus_data, dishes_data):
 
         # Обработка подменю
         for submenu_data in submenus_data:
-            # print(f"DATAAAAAA{submenu_data}")
             submenu_uuid = submenu_data['uuid']
             menu_uuid = submenu_data['menu_uuid']
             response = await client.get(f'{BASE_URL}/menus/{menu_uuid}/submenus/{submenu_uuid}')
@@ -175,60 +144,3 @@ async def async_database_operations(menus_data, submenus_data, dishes_data):
                 del dish_data['menu_uuid']
                 del dish_data['submenu_uuid']
                 await client.post(f'{BASE_URL}/menus/{menu_uuid}/submenus/{submenu_uuid}/dishes', json=dish_data)
-
-# async def async_database_operations(data_from_excel):
-#     async with AsyncSessionLocal() as db:
-#         menu_repo = MenuRepository(db)
-#         submenu_repo = SubmenuRepository(db)
-#         dish_repo = DishRepository(db)
-#         existing_menus = await menu_repo.get_full_menus()
-#
-#         for menu_data in data_from_excel:
-#             menu_title = menu_data["title"]
-#             existing_menu = next((menu for menu in existing_menus if menu.title == menu_title), None)
-#
-#             if not existing_menu:
-#                 # Создание нового меню
-#                 menu_obj = schemas.MenuCreate(title=menu_data["title"], description=menu_data["description"])
-#                 new_menu = await menu_repo.create_menu(menu_obj)
-#             else:
-#                 # Обновление существующего меню
-#                 menu_obj = schemas.MenuCreate(title=menu_data["title"], description=menu_data["description"])
-#                 new_menu = await menu_repo.update_menu(existing_menu.id, menu_obj)
-#
-#             # Обработка подменю
-#             submenus = menu_data.get("submenus", [])
-#             for submenu_data in submenus:
-#                 submenu_title = submenu_data["title"]
-#                 existing_submenu = None
-#                 if existing_menu:
-#                     existing_submenu = next(
-#                         (submenu for submenu in existing_menu.submenus if submenu.title == submenu_title), None)
-#
-#                 if not existing_submenu:
-#                     # Создание нового подменю
-#                     submenu_obj = schemas.SubmenuCreate(title=submenu_data["title"], description=submenu_data["description"])
-#                     new_submenu = await submenu_repo.create_submenu(new_menu.id, submenu_obj)
-#                 else:
-#                     # Обновление существующего подменю
-#                     submenu_obj = schemas.SubmenuCreate(title=submenu_data["title"], description=submenu_data["description"])
-#                     new_submenu = await submenu_repo.update_submenu(new_menu.id, existing_submenu.id, submenu_obj)
-#
-#                 # Обработка блюд
-#                 dishes = submenu_data.get("dishes", [])
-#                 for dish_data in dishes:
-#                     dish_title = dish_data["title"]
-#                     if existing_submenu:
-#                         existing_dish = next((dish for dish in existing_submenu.dishes if dish.title == dish_title),
-#                                              None)
-#                     else:
-#                         existing_dish = None
-#
-#                     if not existing_dish:
-#                         # Создание нового блюда
-#                         dish_obj = schemas.DishCreate(title=dish_data["title"], description=dish_data["description"], price=dish_data["price"])
-#                         await dish_repo.create_dish(new_submenu.id, dish_obj)
-#                     else:
-#                         # Обновление существующего блюда
-#                         dish_obj = schemas.DishCreate(title=dish_data["title"], description=dish_data["description"], price=dish_data["price"])
-#                         await dish_repo.update_dish(new_submenu.id, existing_dish.id, dish_obj)
