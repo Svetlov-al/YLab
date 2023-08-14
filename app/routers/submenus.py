@@ -71,7 +71,6 @@ async def read_submenu(menu_id: UUID, submenu_id: UUID, background_tasks: Backgr
             'menu_id': str(submenu.menu_id),
             **submenu.dict(exclude={'id', 'menu_id'})
         })
-    await redis_client.set_key(cache_key, serialized_submenu, expire_time=cache_expire_time)
     background_tasks.add_task(redis_client.set_key, cache_key, serialized_submenu, expire_time=cache_expire_time)
 
     return submenu
