@@ -131,7 +131,6 @@ class TestMenu:
                 response = await client.get('/api/v1/')
                 assert response.status_code == 200
                 data = response.json()
-                print(data)
                 # Проверка структуры и содержимого меню
                 assert 'id' in data[0]
                 assert 'title' in data[0]

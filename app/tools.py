@@ -29,6 +29,9 @@ class RedisTools:
         if expire_time:
             await self.redis.expire(key, expire_time)
 
+    async def invalidate_cache_key(self, key: str):
+        await self.delete_key(key)
+
     async def clear_all(self):
         await self.redis.flushall()
 
