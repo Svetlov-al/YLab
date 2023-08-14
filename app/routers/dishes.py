@@ -47,7 +47,7 @@ async def read_dishes(background_tasks: BackgroundTasks, menu_id: UUID, submenu_
         'menu_id': str(menu_id),
         'submenu_id': str(submenu_id),
         'price': str(dish.price),
-        **dish.model_dump(exclude={'id', 'price'})
+        **dish.dict(exclude={'id', 'price'})
     } for dish in pydantic_dishes])
     background_tasks.add_task(redis_client.set_key, cache_key, serialized_dishes, cache_expire_time)
     return dishes

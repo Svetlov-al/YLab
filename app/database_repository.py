@@ -90,7 +90,7 @@ class SubmenuRepository:
         return submenu
 
     async def create_submenu(self, menu_id, submenu_data: schemas.SubmenuCreate):
-        db_submenu = models.Submenu(menu_id=menu_id, **submenu_data.model_dump())
+        db_submenu = models.Submenu(menu_id=menu_id, **submenu_data.dict())
         self.db.add(db_submenu)
         await self.db.commit()
         await self.db.refresh(db_submenu)
@@ -98,7 +98,7 @@ class SubmenuRepository:
 
     async def update_submenu(self, menu_id, submenu_id, submenu_data: schemas.SubmenuBase):
         db_submenu = await self.get_submenu(menu_id, submenu_id)
-        for key, value in submenu_data.model_dump().items():
+        for key, value in submenu_data.dict().items():
             setattr(db_submenu, key, value)
         await self.db.commit()
         await self.db.refresh(db_submenu)
@@ -138,7 +138,7 @@ class DishRepository:
 
     async def update_dish(self, submenu_id, dish_id, dish_data: schemas.DishBase):
         db_dish = await self.get_dish(submenu_id, dish_id)
-        for key, value in dish_data.model_dump().items():
+        for key, value in dish_data.dict().items():
             setattr(db_dish, key, value)
         await self.db.commit()
         await self.db.refresh(db_dish)

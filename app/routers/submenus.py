@@ -44,7 +44,7 @@ async def read_submenus(menu_id: UUID, background_tasks: BackgroundTasks, db: As
 
     # Сериализуем подменю в строку JSON и добавим в кеш
     serialized_submenus = json.dumps([{'id': str(submenu.id), 'menu_id': str(submenu.menu_id),
-                                       **submenu.model_dump(exclude={'id', 'menu_id'})} for submenu in
+                                       **submenu.dict(exclude={'id', 'menu_id'})} for submenu in
                                       pydantic_submenus])
     background_tasks.add_task(redis_client.set_key, cache_key, serialized_submenus, expire_time=cache_expire_time)
     return submenus

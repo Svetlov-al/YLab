@@ -65,7 +65,7 @@ async def read_menu(menu_id: UUID, background_tasks: BackgroundTasks, db: AsyncS
     serialized_menu = json.dumps({'id': str(menu.id), **menu.dict(exclude={'id'})})
     background_tasks.add_task(redis_client.set_key, cache_key, serialized_menu, cache_expire_time)
 
-    return schemas.MenuOutPut.model_validate(menu)
+    return schemas.MenuOutPut.dict(menu)
 
 
 @router.post('/menus', status_code=status.HTTP_201_CREATED, response_model=schemas.MenuOutPut)
@@ -75,7 +75,7 @@ async def create_menu(menu: schemas.MenuCreate, background_tasks: BackgroundTask
 
     background_tasks.add_task(redis_client.delete_key, 'menus')
 
-    return schemas.MenuOutPut.model_validate(menu_created)
+    return schemas.MenuOutPut.dict(menu_created)
 
 
 @router.patch('/menus/{menu_id}', response_model=schemas.MenuOutPut)
@@ -87,7 +87,7 @@ async def update_menu(menu_id: UUID, menu: schemas.MenuBase, background_tasks: B
     background_tasks.add_task(redis_client.delete_key, 'menus')
     background_tasks.add_task(redis_client.delete_key, f'MenuData_{menu_id}')
 
-    return schemas.MenuOutPut.model_validate(menu_updated)
+    return schemas.MenuOutPut.dict(menu_updated)
 
 
 @router.delete('/menus/{menu_id}')
