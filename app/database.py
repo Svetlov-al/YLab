@@ -1,5 +1,3 @@
-from typing import AsyncIterator
-
 from sqlalchemy import MetaData, create_engine
 from sqlalchemy.ext.asyncio import AsyncSession, create_async_engine
 from sqlalchemy.orm import declarative_base, sessionmaker
@@ -32,9 +30,13 @@ metadata = MetaData()
 Base = declarative_base(metadata=metadata)
 
 
-async def get_db() -> AsyncIterator[AsyncSession]:
-    db = AsyncSessionLocal()
-    try:
-        yield db
-    finally:
-        await db.close()
+# async def get_db() -> AsyncIterator[AsyncSession]:
+#     db = AsyncSessionLocal()
+#     try:
+#         yield db
+#     finally:
+#         await db.close()
+
+async def get_db() -> AsyncSession:
+    async with AsyncSessionLocal() as session:
+        yield session
